@@ -124,8 +124,17 @@ def _has_edfapi():
     return has_edfapi
 
 
-_requires_h5py = np.testing.dec.skipif(not _has_h5py(),
-                                       'Requires h5py')
+def _requires_h5py(func):
+    """Skip testing if h5py is not installed."""
+    import pytest
+
+    return pytest.mark.skipif(not _has_h5py(),
+                              reason='Requires h5py')(func)
 
 
-_requires_edfapi = np.testing.dec.skipif(not _has_edfapi(), 'Requires edfapi')
+def _requires_edfapi(func):
+    """Skip testing if edfapi is not installed."""
+    import pytest
+
+    return pytest.mark.skipif(not _has_edfapi(),
+                              reason='Requires edfapi')(func)
