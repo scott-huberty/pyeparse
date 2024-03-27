@@ -4,7 +4,8 @@
 import struct
 import sys
 from ctypes import (c_int, Structure, c_char, c_char_p, c_ubyte,
-                    c_short, c_ushort, c_uint, c_float, POINTER, CDLL, util)
+                    c_short, c_ushort, c_uint, c_float, POINTER, CDLL, util,
+                    Union)
 
 # find and load the library
 if sys.platform.startswith('win') and (8 * struct.calcsize("P") == 64):
@@ -108,23 +109,10 @@ edf_get_preamble_text = edfapi.edf_get_preamble_text
 edf_get_preamble_text.argtypes = [POINTER(EDFFILE), c_char_p, c_int]
 edf_get_preamble_text.restype = c_int
 
-edf_get_recording_data = edfapi.edf_get_recording_data
-edf_get_recording_data.argtypes = [POINTER(EDFFILE)]
-edf_get_recording_data.restype = POINTER(RECORDINGS)
-
-edf_get_sample_data = edfapi.edf_get_sample_data
-edf_get_sample_data.argtypes = [POINTER(EDFFILE)]
-edf_get_sample_data.restype = POINTER(FSAMPLE)
-
-edf_get_event_data = edfapi.edf_get_event_data
-edf_get_event_data.argtypes = [POINTER(EDFFILE)]
-edf_get_event_data.restype = POINTER(FEVENT)
-
-"""
-from ctypes import Union
 
 class IMESSAGE(Structure):
     pass
+
 
 IMESSAGE.__slots__ = ['time', 'type', 'length', 'text']
 IMESSAGE._fields_ = [('time', c_uint), ('type', c_short), ('length', c_ushort),
@@ -134,12 +122,14 @@ IMESSAGE._fields_ = [('time', c_uint), ('type', c_short), ('length', c_ushort),
 class IOEVENT(Structure):
     pass
 
+
 IOEVENT.__slots__ = ['time', 'type', 'data']
 IOEVENT._fields_ = [('time', c_uint), ('type', c_short), ('data', c_ushort)]
 
 
 class ALLF_DATA(Union):
     pass
+
 
 ALLF_DATA.__slots__ = ['fe', 'im', 'io', 'fs', 'rec']
 ALLF_DATA._fields_ = [('fe', FEVENT), ('im', IMESSAGE), ('io', IOEVENT),
@@ -149,6 +139,7 @@ edf_get_float_data = edfapi.edf_get_float_data
 edf_get_float_data.argtypes = [POINTER(EDFFILE)]
 edf_get_float_data.restype = POINTER(ALLF_DATA)
 
+"""
 edf_get_sample_close_to_time = edfapi.edf_get_sample_close_to_time
 edf_get_sample_close_to_time.argtypes = [POINTER(EDFFILE), c_uint]
 edf_get_sample_close_to_time.restype = POINTER(ALLF_DATA)
